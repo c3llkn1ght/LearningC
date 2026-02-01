@@ -52,7 +52,7 @@ Node *newNode(LinkedList *list, void *value, size_t valueSize) {
 void removeNode(LinkedList *list, int key) {
     //if the key is too big or too small, go fuck yourself
     if (key < 0 || key >= list->size) {
-        printf("fuck your keys.\n");
+        printf("bad keys.\n");
         return;
     }
     //take note of the first node

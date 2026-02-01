@@ -2,6 +2,6 @@
 
 int main()
 {
-	printf("Hello World. I am a homosexual. new line. \r\n");
+	printf("Hello World\n");
 	return 0;
 }

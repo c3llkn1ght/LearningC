@@ -22,7 +22,6 @@ int main(void)
 
     int* p = array; //p is an 8-byte variable whose bits are interpreted as a memory address
     //a pointer is always 8 bytes (64 bits) in x64
-    //the bytes that make up p already contained something from before. The compiler does not clear it.
     //the CPU goes to the address and reads a 4 byte value, the length of an integer in x64
     //basically saying “When I dereference p, treat 4 bytes found at that address as an int"
     //the pointer is 8 bytes (the address), and the integer it points to is 4 bytes (the value in the address)
@@ -69,7 +68,6 @@ int main(void)
     free(p3);
     free(p4);
     free(p5);
-
 
     return 0;
 }

@@ -32,7 +32,7 @@ void insertElement(Resize *list, int value) {
         //allocate more memory for the resized array, but do it carefully
         int *tmp = realloc(list->array, sizeof(int) * list->capacity);
         if (!tmp){
-            printf("FUCK.\n");
+            printf("oh no.\n");
             exit(1);
         }
         list->array = tmp;
@@ -46,7 +46,7 @@ void insertElement(Resize *list, int value) {
 void removeKey(Resize *list, int key) {
     //if the key is larger than the number of elements in the array, go fuck yourself
     if (key >= list->size || key < 0) {
-        printf("fuck your keys. \n");
+        printf("bad keys. \n");
         return;
     }
     //shrink list size
@@ -62,7 +62,7 @@ void removeKey(Resize *list, int key) {
             list->capacity /= 2;
             int *tmp = realloc(list->array, sizeof(int) * list->capacity);
             if (!tmp) {
-                printf("FUCK.\n");
+                printf("oh no.\n");
                 exit(1);
             }
             list->array = tmp;

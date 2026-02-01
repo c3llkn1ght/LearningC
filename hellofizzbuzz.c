@@ -2,7 +2,7 @@
 
 int main()
 {
-	printf("Hello World. I am a homosexual. new line. \r\n");
+	printf("Hello World.\n");
 
 	int i;
 	for (i = 0; i <= 100; i++) {
