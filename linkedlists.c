@@ -5,7 +5,7 @@
 typedef struct Node {
     struct Node *next;
     struct Node *prev;
-    (void*) data;
+    void *data;
 } Node;
 
 typedef struct LinkedList {
@@ -25,13 +25,13 @@ LinkedList *createList() {
 Node *newNode(LinkedList *list, void *value, size_t valueSize) {
     //fresh node for an empty list
     if (list->size == 0) {
-        Node *newNode = (Node*) malloc(sizeof(Node)); //allocate struct memory
+        Node *newNode = malloc(sizeof(Node)); //allocate struct memory
         newNode->next = NULL; //if theres nothing in the list, there's nothing to point to
         newNode->prev = NULL; //if theres nothing in the list, there's nothing to point to
         newNode->data = malloc(valueSize); //allocate memory based on the size of the data
         memcpy(newNode->data, value, valueSize); //copy the value into the allocated memory
-        list->head = &newNode;  //set the list head as the pointer of the new node
-        list->tail = &newNode; //set the list tail as the pointer value of the new node
+        list->head = newNode;  //set the list head as the pointer of the new node
+        list->tail = newNode; //set the list tail as the pointer value of the new node
         list->size++; // increase the size of the list
         return newNode;
     }
@@ -42,7 +42,8 @@ Node *newNode(LinkedList *list, void *value, size_t valueSize) {
         newNode->prev = list->tail; //pointer to the node previous to this node
         newNode->data = malloc(valueSize); // allocate memory based on the size of the data
         memcpy(newNode->data, value, valueSize); //copy the value into the allocated memory
-        list->tail = &newNode; //set the list tail as the pointer value of the new node
+        list->tail->next = newNode;
+        list->tail = newNode; //set the list tail as the pointer value of the new node
         list->size++; //increase the size of the list
         return newNode;
     }
@@ -50,47 +51,101 @@ Node *newNode(LinkedList *list, void *value, size_t valueSize) {
 
 void removeNode(LinkedList *list, int key) {
     //if the key is too big or too small, go fuck yourself
-    if (0 <= key && key < list->size) {
+    if (key < 0 || key >= list->size) {
         printf("fuck your keys.\n");
         return;
     }
-    //if theres only one node in the list, fuck your list
-    if (list->head == list->tail) {
-        list->head = NULL;
-        list->tail = NULL;
-    }
-    //take note of the first and last nodes
-    current = list->head;
-    last = list->tail;
-    //if the key is the first item in the list, overwrite the list head with the pointer of the next node
-    if (key == 0) {
-        list->head = list->head->next;
-    }
-    //if the key is the last item in the list, overwrite the tail with the pointer of the node previous to it 
-    if (key == list->size - 1) {
-        list->tail = list->tail->prev;
-    }
+    //take note of the first node
+    Node *current = list->head;
+
     //iterate through the nodes until we reach the key
-    for (int i = 0; i <= key;  i++) {
+    for (int i = 0; i < key;  i++) {
         current = current->next;
-        //when we get to the key, copy the next and previous pointers in the node to temporary variables
-        if (i == key) {
-            a = current->prev;
-            b = current->next;
-            //go back to the previous node and overwrite its next pointer
-            current = current->prev;
-            current->next = b;
-            free(current->data); // free the memory
-            //advance to the pointer we just wrote and overwrite its previous pointer
-            current = current->next;
-            current->prev = a;
-        }
     }
+
+    //create temporary node pointers for the current "next" and "prev" pointers
+    Node *prev = current->prev;
+    Node *next = current->next;
+
+    if (prev) {
+        prev->next = next; //if there is a previous node, overwrite the node
+        //prev.next = &next
+    }
+    else {
+        list->head = next; // if theres no previous node, we simply overwrite the head
+        //list.head = &next
+    }
+
+    // the current node is now deindexed from the left side
+
+    if (next) {
+        next->prev = prev; //if there is a next node, overwrite the node
+        //next.prev - &prev
+    }
+    else {
+        list->tail = prev; // if theres no previous node, we simply overwrite the tail
+        //list.tail = &prev
+    }
+
+    //the current node is now deindexed from the right side
+    //the node is isolated, floating in memory
+
+    free(current->data);// free the memory allocated for data
+    free(current); // free the memory allocated for the struct
     list->size--; //decrease the size of the list
+
     return;
+}
+
+LinkedList *printList(LinkedList *list) {
+    printf("size: %d\n", list->size);
+    Node *current = list->head;
+    for (int i = 0; i < list->size; i++) {
+        printf("node %d: %d\n", i + 1, *(int*)current->data);
+        current = current->next;
+    }
+    return 0;
 }
 
 int main () {
     LinkedList *list = createList();
-    Node *newNode();
+    int *x = (int*) malloc(sizeof(int));
+    *x = 1;
+    int *y = (int*) malloc(sizeof(int));
+    *y = 2;
+    int *z = (int*) malloc(sizeof(int));
+    *z = 3;
+    int *a = (int*) malloc(sizeof(int));
+    *a = 4;
+    int *b = (int*) malloc(sizeof(int));
+    *b = 5;
+    int *c = (int*) malloc(sizeof(int));
+    *c = 6;
+    int *d = (int*) malloc(sizeof(int));
+    *d = 7;
+    int *e = (int*) malloc(sizeof(int));
+    *e = 8;
+    int *f = (int*) malloc(sizeof(int));
+    *f = 9;
+    int *g = (int*) malloc(sizeof(int));
+    *g = 10;
+    newNode(list, x, sizeof(int));
+    newNode(list, y, sizeof(int));
+    newNode(list, z, sizeof(int));
+    newNode(list, a, sizeof(int));
+    newNode(list, b, sizeof(int));
+    newNode(list, c, sizeof(int));
+    newNode(list, d, sizeof(int));
+    newNode(list, e, sizeof(int));
+    newNode(list, f, sizeof(int));
+    newNode(list, g, sizeof(int));
+    printList(list);
+    removeNode(list, 0);
+    printList(list);
+    removeNode(list, 8);
+    printList(list);
+    removeNode(list, 3);
+    printList(list);
+    removeNode(list, 100);
+    removeNode(list, -1);
 }
